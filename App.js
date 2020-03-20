@@ -22,6 +22,10 @@ export default class App extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this._getLocation();
+  }
+
   _getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
@@ -32,8 +36,6 @@ export default class App extends React.Component {
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
-
-    console.log(JSON.stringify(userLocation));
 
     this.setState({
       location: userLocation
@@ -60,8 +62,6 @@ export default class App extends React.Component {
   updateTracking = () => {
     if(this.state.trackingEnabled == true){
       console.log("Tracking is enabled");
-
-      this._getLocation();
 
 
 
