@@ -3,6 +3,7 @@ import { StyleSheet, View, Dimensions, SafeAreaView } from "react-native";
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as TaskManager from 'expo-task-manager';
 
 import FetchLocation from './FetchLocation';
 import TrackLocation from './TrackLocation';
@@ -12,6 +13,7 @@ import ErrorBoundary from './ErrorBoundary';
 const height15 = ((Dimensions.get('window').height)*.15);
 const height20 = ((Dimensions.get('window').height)*.20);
 const width80 = ((Dimensions.get('window').width)*.80);
+const LOCATION_TASK = 'background_location_tracking';
 
 export default class App extends React.Component {
   constructor() {
@@ -33,6 +35,9 @@ export default class App extends React.Component {
       console.log('PERMISSION NOT GRANTED');
     } else {
       console.log('PERMISSION GRANTED!');
+      this.setState({
+        trackingEnabled: true,
+      })
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
@@ -55,32 +60,29 @@ export default class App extends React.Component {
     });
   }
 
-  userComprimised = () => {
+  userComprimised = async () => {
     console.log("User Comprimised Button Pressed");
+    console.log("Is task registered: ", (await TaskManager.getRegisteredTasksAsync()));
   }
 
   updateTracking = () => {
     if(this.state.trackingEnabled == true){
       console.log("Tracking is enabled");
-
-
-
-
-
-      // navigator.geolocation.getCurrentPosition(position => {
-      //   console.log(JSON.stringify(position));
-      // }, err => console.log(err));
-
-      // var watchID = navigator.geolocation.watchPosition((position) => {
-      //   console.log(JSON.stringify(position));
-      // }, err => console.log(err));
-      // console.log("Watch ID = " + watchID);
-
-      
-
+      this.beginTracking();
     } else {
       console.log("Tracking is disabled");
+      this.stopTracking();
     }
+  }
+
+  beginTracking = async () => {
+    await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+      accuracy: Location.Accuracy.Highest,
+    });
+  };
+
+  stopTracking = async () => {
+    TaskManager.unregisterTaskAsync(LOCATION_TASK);
   }
 
   render() {
@@ -111,5 +113,17 @@ const styles = StyleSheet.create({
   },
   switchText: {
     fontSize: 20,
+  }
+});
+
+
+TaskManager.defineTask(LOCATION_TASK, ({ data, error }) => {
+  if (error) {
+    console.log("BACKGROUND TASK ERROR");
+    console.log(error.message);
+  }
+  if (data) {
+    const { locations } = data;
+    console.log("locations", locations);
   }
 });
