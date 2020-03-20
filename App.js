@@ -1,5 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, Dimensions, SafeAreaView, ScrollView, FlatList } from "react-native";
+import { StyleSheet, View, Dimensions, SafeAreaView } from "react-native";
+
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
 import FetchLocation from './FetchLocation';
 import TrackLocation from './TrackLocation';
@@ -15,7 +18,26 @@ export default class App extends React.Component {
     super();
     this.state = {
       trackingEnabled: false,
+      location: {},
     }
+  }
+
+  _getLocation = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+    if(status !== 'granted') {
+      console.log('PERMISSION NOT GRANTED');
+    } else {
+      console.log('PERMISSION GRANTED!');
+    }
+
+    const userLocation = await Location.getCurrentPositionAsync();
+
+    console.log(JSON.stringify(userLocation));
+
+    this.setState({
+      location: userLocation
+    })
   }
 
   getUserLocationHandler = () => {
@@ -38,14 +60,23 @@ export default class App extends React.Component {
   updateTracking = () => {
     if(this.state.trackingEnabled == true){
       console.log("Tracking is enabled");
+
+      this._getLocation();
+
+
+
+
+
       // navigator.geolocation.getCurrentPosition(position => {
       //   console.log(JSON.stringify(position));
       // }, err => console.log(err));
 
-      var watchID = navigator.geolocation.watchPosition((position) => {
-        console.log(JSON.stringify(position));
-      }, err => console.log(err));
-      console.log("Watch ID = " + watchID);
+      // var watchID = navigator.geolocation.watchPosition((position) => {
+      //   console.log(JSON.stringify(position));
+      // }, err => console.log(err));
+      // console.log("Watch ID = " + watchID);
+
+      
 
     } else {
       console.log("Tracking is disabled");
