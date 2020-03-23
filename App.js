@@ -62,7 +62,39 @@ export default class App extends React.Component {
 
   userComprimised = async () => {
     console.log("User Comprimised Button Pressed");
-    console.log("Is task registered: ", (await TaskManager.getRegisteredTasksAsync()));
+    // fetch('http://coronatrackerbackend-env.eba-qaxyruzr.us-east-2.elasticbeanstalk.com/signup', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     email: 'sentFromReact@gmail.com',
+    //     name: 'react user',
+    //     previewAccess: 'S',
+    //     theme: 'S',
+    //   }),
+    // });
+
+    // fetch('http://coronatrackerbackend-env.eba-qaxyruzr.us-east-2.elasticbeanstalk.com/test2', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     email: 'sentFromReact@gmail.com',
+    //     name: 'react user',
+    //     preview: 'S',
+    //     theme: 'S',
+    //   })
+    // });
+
+
+    // fetch('http://coronatrackerbackend-env.eba-qaxyruzr.us-east-2.elasticbeanstalk.com/test1')
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     console.log(responseJson.hello);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   }
 
   updateTracking = () => {
